@@ -1,11 +1,10 @@
-export function Login() {
+export function Signup(){
     return <div>
-        <h1>Login</h1>
+        <h1>Signup</h1>
         <form>
             <input type="email" placeholder="Email" />
             <input type="password" placeholder="Password" />
-            <button type="submit">Login</button>
+            <button type="submit">Signup</button>
         </form>
     </div>;
 }
-
