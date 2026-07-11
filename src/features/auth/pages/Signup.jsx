@@ -1,10 +1,14 @@
-export function Signup(){
-    return <div>
-        <h1>Signup</h1>
-        <form>
-            <input type="email" placeholder="Email" />
-            <input type="password" placeholder="Password" />
-            <button type="submit">Signup</button>
-        </form>
-    </div>;
+import { AuthIllustration } from "../components/AuthIllustration";
+import { SignupForm } from "../components/SignupForm";
+
+export default function Signup() {
+  return (
+    <div className="min-h-screen grid lg:grid-cols-2">
+
+      <AuthIllustration />
+
+      <SignupForm />
+
+    </div>
+  );
 }

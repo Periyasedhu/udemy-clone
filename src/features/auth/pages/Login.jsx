@@ -1,11 +1,14 @@
-export function Login() {
-    return <div>
-        <h1>Login</h1>
-        <form>
-            <input type="email" placeholder="Email" />
-            <input type="password" placeholder="Password" />
-            <button type="submit">Login</button>
-        </form>
-    </div>;
-}
+import { AuthIllustration } from "../components/AuthIllustration";
+import { LoginForm } from "../components/LoginForm";
 
+export default function Login() {
+  return (
+    <div className="min-h-screen grid lg:grid-cols-2">
+
+      <AuthIllustration />
+
+      <LoginForm />
+
+    </div>
+  );
+}
