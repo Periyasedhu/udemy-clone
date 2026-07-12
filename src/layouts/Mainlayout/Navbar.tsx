@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import {
   Search,
@@ -12,12 +12,52 @@ import {
 
 const PURPLE = "#6d28d2";
 
+type PromoConfig={
+  endDate: string;
+  discountPercent : number;
+  ctaDiscountPercent: number;
+  audience: string;
+  durationMonths: number;
+}
+
+const PROMO_CONFIG: PromoConfig = {
+  endDate: "2026-07-13T09:07:01Z",
+  discountPercent: 30,
+  ctaDiscountPercent: 40,
+  audience: "personal plans",
+  durationMonths: 3,
+};
+
 type MegaItem = {
   label: string;
   icon?: "google";
   panelTitle: string;
   links: string[];
 };
+
+function useCountDown(targetISO: string){
+  const [timeLeft, setTimeLeft] = useState(()=> calcTimeLeft(targetISO));
+useEffect(()=>{
+ 
+  const id=setInterval(()=>{
+    setTimeLeft(calcTimeLeft(targetISO));
+  }, 1000);
+  return () => clearInterval(id);
+}, [targetISO]);
+return timeLeft;
+
+}
+
+function calcTimeLeft(targetISO: string) {
+  const diff = new Date(targetISO).getTime() - Date.now();
+  if (diff <= 0) return { expired: true, h: 0, m: 0, s: 0 };
+
+  const totalSeconds = Math.floor(diff / 1000);
+  const h = Math.floor(totalSeconds / 3600);
+  const m = Math.floor((totalSeconds % 3600) / 60);
+  const s = totalSeconds % 60;
+  return { expired: false, h, m, s };
+}
 
 const NEW_FEATURED: MegaItem[] = [
   {
@@ -335,14 +375,20 @@ export function Navbar() {
   const [query, setQuery] = useState("");
   const [promoOpen, setPromoOpen] = useState(true);
 
+  const {expired, h, m, s} = useCountDown(PROMO_CONFIG.endDate);
+
+  const showPromo= promoOpen && !expired;
+
   return (
-    <div className="sticky top-0 z-50">
-      {promoOpen && (
-        <div className="relative bg-[#d1ecf1] px-10 py-2.5 text-center text-sm text-[#1c1d1f]">
+    <div className="sticky  top-0 z-50">
+      {showPromo && (
+        <div className="relative bg-[#d1ecf1] px-10 py-2.5 font-bold text-center text-sm text-[#1c1d1f]">
           <span>
-            1 day left! Always-on learning for less |{" "}
+            Ends in {h}h {m}m {s}s. Last day to save {PROMO_CONFIG.discountPercent}% off your
+            first {PROMO_CONFIG.durationMonths} months of {PROMO_CONFIG.audience} to advance your
+            career. |{" "}
             <a href="#" className="font-bold underline underline-offset-2">
-              Save 40%
+              Save {PROMO_CONFIG.ctaDiscountPercent}%
             </a>
           </span>
           <button
@@ -388,7 +434,7 @@ export function Navbar() {
           </a>
 
           <form
-            className="mx-3 hidden min-w-0 flex-1 md:block"
+            className="mx-3 hidden min-w-0 max-w-[550px] flex-1 md:block"
             onSubmit={(e) => e.preventDefault()}
           >
             <div className="flex h-12 w-full items-center rounded-full border border-[#c5c4d2] bg-white px-1 focus-within:border-[#6d28d2]">
